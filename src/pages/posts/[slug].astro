@@ -1,0 +1,163 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post:any) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+type Props = {
+  post: CollectionEntry<'blog'>;
+};
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article class="blog-post">
+    
+    <div>
+      <a href="/" class="back-link">← back</a>
+    </div>
+
+    <div>
+         <div class="post-meta">
+        <time datetime={post.data.pubDate.toISOString()}>Published on:
+          {post.data.pubDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })}
+        </time>
+      <h1>{post.data.title}</h1>
+      </div>
+        {post.data.tags && (
+        <div class="tags">
+          {post.data.tags.map((tag:any) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      )}
+       {post.data.image && (
+      <img src={post.data.image} alt={post.data.title} class="hero-image" />
+    )}
+      
+    </div>
+    
+    <div class="content">
+      <Content />
+    </div>
+    
+   
+  </article>
+</BaseLayout>
+
+<style>
+  .blog-post {
+    max-width: 768px;
+    margin: 0 auto;
+  }
+  
+  .hero-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    color: #000000;
+    margin-bottom: 0.5rem;
+  }
+  
+  .post-meta {
+    color: #a6a09b;
+    font-size: 1rem;
+  }
+  
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  
+  .tag {
+    background-color: #f1f5f9;
+    font-weight: 500;
+    padding: 0.12rem 0.60rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+  }
+  
+  .content {
+    line-height: 1.8;
+    font-size: 1.1rem;
+  }
+  
+  .content :global(h2) {
+    margin-top: 1.25rem;
+    margin-bottom: 1rem;
+    color: #000000;
+  }
+  
+  .content :global(h3) {
+    margin-top: 1.2rem;
+    margin-bottom: 0.75rem;
+    color: #000000;
+  }
+  
+  .content :global(p) {
+    margin-bottom: 1.25rem;
+  }
+  
+  .content :global(pre) {
+    background: #f6f6f6;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+  
+  .content :global(code) {
+    background: #f0f0f0;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  
+  .content :global(pre code) {
+    background: none;
+    padding: 0;
+  }
+  
+  .content :global(ul), 
+  .content :global(ol) {
+    margin-bottom: 1.25rem;
+    padding-left: 2rem;
+  }
+  
+  .content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+  
+  .back-link {
+    display: inline-block;
+    font-size: 1rem;
+    margin-bottom: 1.4rem;
+    color: #a6a09b;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .back-link:hover {
+    text-decoration: underline;
+  }
+</style>
