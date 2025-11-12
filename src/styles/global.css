@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'Geist';
-  src: url('/fonts/geist/GeistVF.woff2') format('ttf-variations'),
-       url('/fonts/geist/GeistVF.woff2') format('ttf');
+  src: url('/fonts/GeistVF.ttf') format('ttf-variations'),
+       url('/fonts/GeistVF.ttf') format('ttf');
   font-weight: 100 500 900;
   font-style: normal;
   font-display: swap;
